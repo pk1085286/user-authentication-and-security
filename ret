@@ -1,0 +1,21 @@
+import yfinance as yf
+
+# Define the stock ticker symbol
+ticker_symbol = "AAPL"
+
+# Get the stock data
+ticker_data = yf.Ticker(ticker_symbol)
+
+# Get the real-time price
+current_price = ticker_data.info["regularMarketPrice"]
+
+# Get the real-time bid price
+bid_price = ticker_data.info["bid"]
+
+# Get the real-time ask price
+ask_price = ticker_data.info["ask"]
+
+# Print the results
+print("Current price of " + ticker_symbol + ": " + str(current_price))
+print("Bid price of " + ticker_symbol + ": " + str(bid_price))
+print("Ask price of " + ticker_symbol + ": " + str(ask_price))
