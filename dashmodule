@@ -1,0 +1,63 @@
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
+import plotly.express as px
+import yfinance as yf
+
+# Define the stock ticker symbol
+ticker_symbol = "AAPL"
+
+# Get the stock data
+ticker_data = yf.Ticker(ticker_symbol)
+
+# Define the app layout
+app_layout = html.Div([
+    # Title
+    html.H1("Trading Dashboard"),
+
+    # Stock chart
+    dcc.Graph(
+        id="stock-chart",
+        figure=px.line(
+            ticker_data.history(period="1d"),
+            x=ticker_data.history(period="1d").index,
+            y="Close",
+            title=ticker_symbol + " Stock Price"
+        )
+    ),
+
+    # Stock information
+    html.Div([
+        html.H3("Stock Information"),
+        html.Table([
+            html.Tr([
+                html.Td("Current Price"),
+                html.Td("${:.2f}".format(ticker_data.info["regularMarketPrice"]))
+            ]),
+            html.Tr([
+                html.Td("Bid Price"),
+                html.Td("${:.2f}".format(ticker_data.info["bid"]))
+            ]),
+            html.Tr([
+                html.Td("Ask Price"),
+                html.Td("${:.2f}".format(ticker_data.info["ask"]))
+            ]),
+            html.Tr([
+                html.Td("52-Week High"),
+                html.Td("${:.2f}".format(ticker_data.info["fiftyTwoWeekHigh"]))
+            ]),
+            html.Tr([
+                html.Td("52-Week Low"),
+                html.Td("${:.2f}".format(ticker_data.info["fiftyTwoWeekLow"]))
+            ])
+        ])
+    ])
+])
+
+# Create the app
+app = dash.Dash(__name__)
+app.layout = app_layout
+
+# Run the app
+if __name__ == '__main__':
+    app.run_server(debug=True)
