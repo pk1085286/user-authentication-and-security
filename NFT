@@ -1,0 +1,24 @@
+import pandas as pd
+
+# Define the NFT symbol and time frame
+symbol = "NFT"
+time_frame = "1d"
+
+# Get the NFT market data
+nft_data = pd.read_csv("nft_data.csv") # replace with your own data source
+
+# Convert the date column to a datetime object
+nft_data["Date"] = pd.to_datetime(nft_data["Date"], format="%Y-%m-%d")
+
+# Set the date column as the index
+nft_data.set_index("Date", inplace=True)
+
+# Resample the data to the desired time frame
+nft_data = nft_data.resample(time_frame).agg({"Price": "last"})
+
+# Calculate the daily percentage change in price
+nft_data["Price_Change"] = nft_data["Price"].pct_change()
+
+# Print the daily market NFT price change
+print("Daily Market NFT Price Change:")
+print(nft_data["Price_Change"])

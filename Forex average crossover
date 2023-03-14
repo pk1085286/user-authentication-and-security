@@ -1,0 +1,28 @@
+import yfinance as yf
+
+# Define the stock ticker symbol and time frame
+ticker_symbol = "EURUSD=X"
+time_frame = "1d"
+
+# Get the stock data
+ticker_data = yf.Ticker(ticker_symbol)
+
+# Calculate the moving averages
+short_ma = ticker_data.history(period=time_frame)["Close"].rolling(window=50).mean()
+long_ma = ticker_data.history(period=time_frame)["Close"].rolling(window=200).mean()
+
+# Generate trading signals
+signals = []
+for i in range(len(short_ma)):
+    if short_ma[i] > long_ma[i]:
+        signals.append(1) # buy signal
+    else:
+        signals.append(-1) # sell signal
+
+# Calculate the returns
+returns = []
+for i in range(1, len(ticker_data.history(period=time_frame))):
+    if signals[i-1] == 1:
+        returns.append((ticker_data.history(period=time_frame)["Close"][i] -
+                         ticker_data.history(period=time_frame)["Close"][i-1]) /
+                        ticker

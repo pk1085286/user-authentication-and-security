@@ -1,0 +1,38 @@
+import paypalrestsdk
+
+paypalrestsdk.configure({
+  "mode": "sandbox", # use "live" for production
+  "client_id": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  "client_secret": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" })
+
+def process_payment(amount, token):
+    payment = paypalrestsdk.Payment({
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal",
+            "payer_info": {
+                "email": token.email
+            }
+        },
+        "transactions": [{
+            "amount": {
+                "total": amount,
+                "currency": "USD"
+            },
+            "description": "Trading platform payment"
+        }],
+        "redirect_urls": {
+            "return_url": "http://localhost:5000/success",
+            "cancel_url": "http://localhost:5000/cancel"
+        }
+    })
+
+    if payment.create():
+        # Redirect the user to the PayPal payment page
+        for link in payment.links:
+            if link.method == "REDIRECT":
+                redirect_url = str(link.href)
+                return redirect_url
+    else:
+        # Log error message
+        print(payment.error)

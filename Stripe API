@@ -1,0 +1,17 @@
+import stripe
+
+stripe.api_key = "sk_test_XXXXXXXXXXXXXXXXXXXXXXX" # replace with your own API key
+
+def process_payment(amount, token):
+    try:
+        # Create a charge object using the Stripe API
+        charge = stripe.Charge.create(
+            amount=amount,
+            currency="usd",
+            source=token,
+            description="Trading platform payment"
+        )
+        return True
+    except stripe.error.CardError as e:
+        # The card has been declined
+        return False
